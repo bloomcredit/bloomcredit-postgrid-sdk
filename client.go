@@ -94,6 +94,8 @@ func (c *Client) newRequest(ctx context.Context, method string, url string, body
 			return nil, err
 		}
 
+		fmt.Printf("req json: \n%s\n", string(b))
+
 		buf = bytes.NewBuffer(b)
 	}
 
