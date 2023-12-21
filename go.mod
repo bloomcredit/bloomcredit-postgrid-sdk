@@ -1,4 +1,4 @@
-module github.com/bloomcredit/postgrid-go
+module github.com/bloomcredit/bloomcredit-postgrid-sdk
 
 go 1.21.4
 

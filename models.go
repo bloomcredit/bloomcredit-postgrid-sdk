@@ -56,9 +56,9 @@ type BatchVerifyAddressesResponse struct {
 
 // GeocodeResult represents ...
 type GeocodeResult struct {
-	Location     map[string]any
-	Accuracy     float32 `json:"accuracy"`
-	AccuracyType string  `json:"accuracyType"`
+	Location     map[string]any `json:"location"`
+	Accuracy     float32        `json:"accuracy"`
+	AccuracyType string         `json:"accuracyType"`
 }
 
 // VerifiedAddress represents an address that has been verified by postgrid.
