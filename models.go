@@ -44,6 +44,11 @@ func (a Address) MarshalJSON() ([]byte, error) {
 	return json.Marshal(Alias(a))
 }
 
+// VerifyAddressRequest represents the request model to be sent to the Verify Address endpoint.
+type VerifyAddressRequest struct {
+	Address Address
+}
+
 // BatchVerifyAddressesRequest represents the request model to be sent to the Batch Veryify Addresses endpoint.
 type BatchVerifyAddressesRequest struct {
 	Addresses []Address `json:"addresses"`
@@ -63,18 +68,54 @@ type GeocodeResult struct {
 
 // VerifiedAddress represents an address that has been verified by postgrid.
 type VerifiedAddress struct {
-	Line1           string         `json:"line1"`
-	Line2           string         `json:"line2"`
-	City            string         `json:"city"`
-	ProvinceOrState string         `json:"provinceOrState"`
-	PostalOrZip     string         `json:"postalOrZip"`
-	ZipPlus4        string         `json:"zipPlus4"`
-	FirmName        string         `json:"firmName"`
-	Country         string         `json:"country"`
-	Errors          any            `json:"errors"`
-	Status          string         `json:"status"`
-	Details         map[string]any `json:"details"`
-	GeocodeResult   GeocodeResult  `json:"geocodeResult"`
+	Line1           string                 `json:"line1"`
+	Line2           string                 `json:"line2"`
+	City            string                 `json:"city"`
+	ProvinceOrState string                 `json:"provinceOrState"`
+	PostalOrZip     string                 `json:"postalOrZip"`
+	ZipPlus4        string                 `json:"zipPlus4"`
+	FirmName        string                 `json:"firmName"`
+	Country         string                 `json:"country"`
+	Errors          map[string][]any       `json:"errors"`
+	Status          string                 `json:"status"`
+	Details         VerifiedAddressDetails `json:"details"`
+	GeocodeResult   GeocodeResult          `json:"geocodeResult"`
+}
+
+type VerifiedAddressDetails struct {
+	County                             string `json:"county"`
+	CountyNumber                       string `json:"countyNum"`
+	Residential                        bool   `json:"residential"`
+	StreetName                         string `json:"streetName"`
+	StreetType                         string `json:"streetType"`
+	USAreaCode                         string `json:"usAreaCode"`
+	USCensusBlockNumber                string `json:"usCensusBlockNumber"`
+	USCensusCMSA                       string `json:"usCensusCMSA"`
+	USCensusFIPS                       string `json:"usCensusFIPS"`
+	USCensusMA                         string `json:"usCensusMA"`
+	USCensusMSA                        string `json:"usCensusMSA"`
+	USCensusPMSA                       string `json:"usCensusPMSA"`
+	USCensusTractNumber                string `json:"usCensusTractNumber"`
+	USCongressionalDistrictNumber      string `json:"usCongressionalDistrictNumber"`
+	USHasDaylightSavings               bool   `json:"usHasDaylightSavings"`
+	USIntelligentMailBarcodeKey        string `json:"usIntelligentMailBarcodeKey"`
+	USMailingsCSKey                    string `json:"usMailingsCSKey"`
+	USMailingsCarrierRoute             string `json:"usMailingsCarrierRoute"`
+	USMailingsCheckDigit               string `json:"usMailingsCheckDigit"`
+	USMailingsDefaultFlag              bool   `json:"usMailingsDefaultFlag"`
+	USMailingsDeliveryPoint            string `json:"usMailingsDeliveryPoint"`
+	USMailingsDpvConfirmationIndicator string `json:"usMailingsDpvConfirmationIndicator"`
+	USMailingsDpvCrmaIndicator         string `json:"usMailingsDpvCrmaIndicator"`
+	USMailingsDpvFootnote1             string `json:"usMailingsDpvFootnote1"`
+	USMailingsDpvFootnote2             string `json:"usMailingsDpvFootnote2"`
+	USMailingsEWSFlag                  bool   `json:"usMailingsEWSFlag"`
+	USMailingsElotAscDesc              string `json:"usMailingsElotAscDesc"`
+	USMailingsRecordTypeCode           string `json:"usMailingsRecordTypeCode"`
+	USPostnetBarcode                   string `json:"usPostnetBarcode"`
+	USStateLegislativeLower            string `json:"usStateLegislativeLower"`
+	USStateLegislativeUpper            string `json:"usStateLegislativeUpper"`
+	USTimezone                         string `json:"usTimeZone"`
+	Vacant                             bool   `json:"vacant"`
 }
 
 // VerifiedAddressResponse ...
