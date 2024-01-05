@@ -44,11 +44,6 @@ func (a Address) MarshalJSON() ([]byte, error) {
 	return json.Marshal(Alias(a))
 }
 
-// VerifyAddressRequest represents the request model to be sent to the Verify Address endpoint.
-type VerifyAddressRequest struct {
-	Address Address
-}
-
 // BatchVerifyAddressesRequest represents the request model to be sent to the Batch Veryify Addresses endpoint.
 type BatchVerifyAddressesRequest struct {
 	Addresses []Address `json:"addresses"`

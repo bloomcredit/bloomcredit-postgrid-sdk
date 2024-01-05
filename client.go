@@ -36,22 +36,6 @@ func NewClient(apiKey string, opts ...Option) *Client {
 	}
 }
 
-// VerifyAddress calls the Verify Address endpoint from the postgrid api.
-// https://avdocs.postgrid.com/#1061f2ea-00ee-4977-99da-a54872de28c2
-func (c *Client) VerifyAddress(ctx context.Context, req any) (any, error) {
-	r, err := c.newRequest(ctx, http.MethodPost, fmt.Sprintf("%s%s", baseURL, "/addver/verifications"), req)
-	if err != nil {
-		return nil, err
-	}
-
-	var resp any
-	if err = c.send(r, &resp); err != nil {
-		return nil, err
-	}
-
-	return resp, nil
-}
-
 // BatchVerifyAddresses calls the Batch Verify Address endpoint from the postgrid api.
 // https://avdocs.postgrid.com/#94520412-5072-4f5a-a2e2-49981b66a347
 func (c *Client) BatchVerifyAddresses(ctx context.Context, req BatchVerifyAddressesRequest) (BatchVerifyAddressesResponse, error) {
