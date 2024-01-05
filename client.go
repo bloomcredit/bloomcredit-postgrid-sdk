@@ -77,8 +77,6 @@ func (c *Client) send(req *http.Request, v any) error {
 		return fmt.Errorf("postgrid error: %s", response.Message)
 	}
 
-	fmt.Printf("%s\n", string(response.Data))
-
 	if v == nil {
 		return nil
 	}
@@ -93,8 +91,6 @@ func (c *Client) newRequest(ctx context.Context, method string, url string, body
 		if err != nil {
 			return nil, err
 		}
-
-		fmt.Printf("req json: \n%s\n", string(b))
 
 		buf = bytes.NewBuffer(b)
 	}
