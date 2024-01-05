@@ -76,7 +76,7 @@ type VerifiedAddress struct {
 	ZipPlus4        string                 `json:"zipPlus4"`
 	FirmName        string                 `json:"firmName"`
 	Country         string                 `json:"country"`
-	Errors          map[string][]any       `json:"errors"`
+	Errors          map[string][]string    `json:"errors"`
 	Status          string                 `json:"status"`
 	Details         VerifiedAddressDetails `json:"details"`
 	GeocodeResult   GeocodeResult          `json:"geocodeResult"`
