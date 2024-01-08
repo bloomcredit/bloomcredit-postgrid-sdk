@@ -7,22 +7,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 )
 
 const (
-	baseURL = "https://api.postgrid.com/v1"
+	BaseURL = "https://api.postgrid.com/v1"
 )
 
 // Client allows for interacting with the postgrid api.
 type Client struct {
 	httpClient *http.Client
 	apiKey     string
+	baseURL    string
 }
 
 // NewClient constructs a new client with the given api key.
-func NewClient(apiKey string, opts ...Option) *Client {
+func NewClient(apiKey string, baseURL string, opts ...Option) *Client {
 	options := options{
 		httpClient: &http.Client{},
 	}
@@ -33,6 +32,7 @@ func NewClient(apiKey string, opts ...Option) *Client {
 
 	return &Client{
 		apiKey:     apiKey,
+		baseURL:    baseURL,
 		httpClient: options.httpClient,
 	}
 }
@@ -40,19 +40,7 @@ func NewClient(apiKey string, opts ...Option) *Client {
 // VerifyAddress calls the Verify Address endpoint from the postgrid api.
 // https://avdocs.postgrid.com/#1061f2ea-00ee-4977-99da-a54872de28c2
 func (c *Client) VerifyAddress(ctx context.Context, req VerifyAddressRequest) (VerifiedAddress, error) {
-	data := url.Values{}
-	if req.Address.String != "" {
-		data.Add("address", req.Address.String)
-	} else {
-		data.Add("address[line1]", req.Address.Line1)
-		data.Add("address[line2]", req.Address.Line2)
-		data.Add("address[city]", req.Address.City)
-		data.Add("address[provinceOrState]", req.Address.ProvinceOrState)
-		data.Add("address[postalOrZip]", req.Address.PostalOrZip)
-		data.Add("address[country]", req.Address.Country)
-	}
-
-	r, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s%s", baseURL, "/addver/verifications"), strings.NewReader(data.Encode()))
+	r, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s%s", c.baseURL, "/addver/verifications"), req.Encode())
 	if err != nil {
 		return VerifiedAddress{}, err
 	}
@@ -78,7 +66,7 @@ func (c *Client) BatchVerifyAddresses(ctx context.Context, req BatchVerifyAddres
 		return BatchVerifyAddressesResponse{}, err
 	}
 
-	r, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s%s", baseURL, "/addver/verifications/batch"), bytes.NewBuffer(reqJSON))
+	r, err := http.NewRequestWithContext(ctx, http.MethodPost, fmt.Sprintf("%s%s", c.baseURL, "/addver/verifications/batch"), bytes.NewBuffer(reqJSON))
 	if err != nil {
 		return BatchVerifyAddressesResponse{}, err
 	}
@@ -115,8 +103,6 @@ func (c *Client) send(req *http.Request, v any) error {
 	if response.Status == ResponseStatusError {
 		return fmt.Errorf("postgrid error: %s", response.Message)
 	}
-
-	fmt.Printf("%s\n", string(response.Data))
 
 	if v == nil {
 		return nil
