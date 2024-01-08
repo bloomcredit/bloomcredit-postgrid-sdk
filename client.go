@@ -100,7 +100,6 @@ func (c *Client) BatchVerifyAddresses(ctx context.Context, req BatchVerifyAddres
 func (c *Client) send(req *http.Request, v any) error {
 	// Set default headers
 	req.Header.Set("x-api-key", c.apiKey)
-	// req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
