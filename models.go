@@ -2,7 +2,10 @@ package postgrid
 
 import (
 	"encoding/json"
+	"io"
+	"net/url"
 	"strconv"
+	"strings"
 )
 
 // All possible values for ResponseStatus.
@@ -44,6 +47,27 @@ func (a Address) MarshalJSON() ([]byte, error) {
 	return json.Marshal(Alias(a))
 }
 
+// VerifyAddressRequest represents the request model to be sent to the Verify Address endpoint.
+type VerifyAddressRequest struct {
+	Address Address
+}
+
+func (r VerifyAddressRequest) Encode() io.Reader {
+	data := url.Values{}
+	if r.Address.String != "" {
+		data.Add("address", r.Address.String)
+	} else {
+		data.Add("address[line1]", r.Address.Line1)
+		data.Add("address[line2]", r.Address.Line2)
+		data.Add("address[city]", r.Address.City)
+		data.Add("address[provinceOrState]", r.Address.ProvinceOrState)
+		data.Add("address[postalOrZip]", r.Address.PostalOrZip)
+		data.Add("address[country]", r.Address.Country)
+	}
+
+	return strings.NewReader(data.Encode())
+}
+
 // BatchVerifyAddressesRequest represents the request model to be sent to the Batch Veryify Addresses endpoint.
 type BatchVerifyAddressesRequest struct {
 	Addresses []Address `json:"addresses"`
@@ -56,9 +80,14 @@ type BatchVerifyAddressesResponse struct {
 
 // GeocodeResult represents ...
 type GeocodeResult struct {
-	Location     map[string]any `json:"location"`
-	Accuracy     float32        `json:"accuracy"`
-	AccuracyType string         `json:"accuracyType"`
+	Location     GeocodeLocation `json:"location"`
+	Accuracy     float32         `json:"accuracy"`
+	AccuracyType string          `json:"accuracyType"`
+}
+
+type GeocodeLocation struct {
+	Latitude  float64 `json:"lat"`
+	Longitude float64 `json:"lng"`
 }
 
 // VerifiedAddress represents an address that has been verified by postgrid.
