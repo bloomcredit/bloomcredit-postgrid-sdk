@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/hashicorp/go-retryablehttp"
 )
 
 const (
@@ -22,8 +24,11 @@ type Client struct {
 
 // NewClient constructs a new client with the given api key.
 func NewClient(apiKey string, baseURL string, opts ...Option) *Client {
+	client := retryablehttp.NewClient()
+	client.RetryMax = 5
+
 	options := options{
-		httpClient: &http.Client{},
+		httpClient: client.StandardClient(),
 	}
 
 	for _, opt := range opts {
