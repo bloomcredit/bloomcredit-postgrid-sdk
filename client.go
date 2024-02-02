@@ -105,7 +105,6 @@ func (c *Client) send(req *http.Request, v any) error {
 		return err
 	}
 	defer resp.Body.Close()
-	fmt.Printf("%+v\n", resp.Header)
 
 	var response Response
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
