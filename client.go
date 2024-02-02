@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"golang.org/x/time/rate"
 )
 
 const (
@@ -18,12 +20,15 @@ type Client struct {
 	httpClient *http.Client
 	apiKey     string
 	baseURL    string
+
+	rateLimiter *rate.Limiter
 }
 
 // NewClient constructs a new client with the given api key.
 func NewClient(apiKey string, baseURL string, opts ...Option) *Client {
 	options := options{
-		httpClient: &http.Client{},
+		httpClient:  &http.Client{},
+		rateLimiter: rate.NewLimiter(5, 5),
 	}
 
 	for _, opt := range opts {
@@ -31,9 +36,10 @@ func NewClient(apiKey string, baseURL string, opts ...Option) *Client {
 	}
 
 	return &Client{
-		apiKey:     apiKey,
-		baseURL:    baseURL,
-		httpClient: options.httpClient,
+		apiKey:      apiKey,
+		baseURL:     baseURL,
+		httpClient:  options.httpClient,
+		rateLimiter: options.rateLimiter,
 	}
 }
 
@@ -86,6 +92,11 @@ func (c *Client) BatchVerifyAddresses(ctx context.Context, req BatchVerifyAddres
 
 // send initiates the http request and unmarshals the response into the object passed in.
 func (c *Client) send(req *http.Request, v any) error {
+	// Respect rate limit
+	if err := c.rateLimiter.Wait(req.Context()); err != nil {
+		return err
+	}
+
 	// Set default headers
 	req.Header.Set("x-api-key", c.apiKey)
 
@@ -94,6 +105,7 @@ func (c *Client) send(req *http.Request, v any) error {
 		return err
 	}
 	defer resp.Body.Close()
+	fmt.Printf("%+v\n", resp.Header)
 
 	var response Response
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
