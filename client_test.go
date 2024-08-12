@@ -230,6 +230,35 @@ func TestClient_VerifyAddress(t *testing.T) {
 			want:    VerifiedAddress{},
 			wantErr: assert.Error,
 		},
+		{
+			name: "server timeout",
+			args: args{
+				ctx: context.Background(),
+				req: VerifyAddressRequest{
+					Address: Address{
+						String: "251 e 13th st frnt a, New York, NY 10003",
+					},
+				},
+			},
+			expectations: expectations{
+				Path:   "/addver/verifications?geocode=true&includeDetails=true",
+				Method: http.MethodPost,
+				Headers: map[string][]string{
+					"X-API-Key": nil,
+				},
+				Body: VerifyAddressRequest{
+					Address: Address{
+						String: "251 e 13th st frnt a, New York, NY 10003",
+					},
+				}.Encode(),
+			},
+			resp: response{
+				Body:   "<html> returns a html string for timeout; do not decode </html>",
+				Status: httpStatusPostgridTimeout,
+			},
+			want:    VerifiedAddress{},
+			wantErr: assert.Error,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -240,6 +269,10 @@ func TestClient_VerifyAddress(t *testing.T) {
 			got, err := client.VerifyAddress(tt.args.ctx, tt.args.req)
 			if !tt.wantErr(t, err, "VerifyAddress(%v, %v)", tt.args.ctx, tt.args.req) {
 				return
+			}
+
+			if tt.resp.Status == httpStatusPostgridTimeout {
+				tt.wantErr(t, err, "postgrid error: received postgrid timeout status 524", tt.args.ctx, tt.args.req)
 			}
 
 			assert.Equal(t, tt.want, got)
