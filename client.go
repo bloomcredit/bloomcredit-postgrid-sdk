@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	BaseURL = "https://api.postgrid.com/v1"
+	BaseURL                   = "https://api.postgrid.com/v1"
+	httpStatusPostgridTimeout = 524
 )
 
 // Client allows for interacting with the postgrid api.
@@ -104,11 +105,16 @@ func (c *Client) send(req *http.Request, v any) error {
 	if err != nil {
 		return err
 	}
+
+	if resp.StatusCode == httpStatusPostgridTimeout {
+		return fmt.Errorf("postgrid error: received postgrid timeout status %d", httpStatusPostgridTimeout)
+	}
+
 	defer resp.Body.Close()
 
 	var response Response
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return fmt.Errorf("decoding response envelope: %w", err)
+		return fmt.Errorf("error decoding response envelope from postgrid: %w", err)
 	}
 
 	if response.Status == ResponseStatusError {
