@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"golang.org/x/time/rate"
@@ -114,7 +115,17 @@ func (c *Client) send(req *http.Request, v any) error {
 
 	var response Response
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return fmt.Errorf("error decoding response envelope from postgrid: %w", err)
+
+		// try parsing the response as string for more details
+		body, err1 := io.ReadAll(resp.Body)
+		if err1 != nil {
+			return fmt.Errorf("error decoding response envelope from postgrid as json or string. json error: %w, string error: %w, response status code %d",
+				err, err1, resp.StatusCode)
+		}
+
+		respString := string(body)
+		return fmt.Errorf("error decoding response envelope from postgrid as json: %w, received string response: %s, response status code %d",
+			err, respString, resp.StatusCode)
 	}
 
 	if response.Status == ResponseStatusError {
