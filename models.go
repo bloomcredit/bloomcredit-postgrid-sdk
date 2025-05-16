@@ -105,22 +105,33 @@ type VerifiedAddress struct {
 	Details         VerifiedAddressDetails `json:"details"`
 	GeocodeResult   GeocodeResult          `json:"geocodeResult"`
 }
-
 type VerifiedAddressDetails struct {
+	StreetName                         string `json:"streetName"`
+	StreetType                         string `json:"streetType"`
+	StreetDirection                    string `json:"streetDirection"`
+	StreetNumber                       string `json:"streetNumber"`
+	SuiteID                            string `json:"suiteID"`
+	SuiteKey                           string `json:"suiteKey"`
+	BoxID                              string `json:"boxID"`
+	DeliveryInstallationAreaName       string `json:"deliveryInstallationAreaName"`
+	DeliveryInstallationType           string `json:"deliveryInstallationType"`
+	DeliveryInstallationQualifier      string `json:"deliveryInstallationQualifier"`
+	RuralRouteNumber                   string `json:"ruralRouteNumber"`
+	RuralRouteType                     string `json:"ruralRouteType"`
+	ExtraInfo                          string `json:"extraInfo"`
 	County                             string `json:"county"`
 	CountyNumber                       string `json:"countyNum"`
 	Residential                        bool   `json:"residential"`
-	StreetName                         string `json:"streetName"`
-	StreetType                         string `json:"streetType"`
-	USAreaCode                         string `json:"usAreaCode"`
-	USCensusBlockNumber                string `json:"usCensusBlockNumber"`
+	Vacant                             bool   `json:"vacant"`
+	PreDirection                       string `json:"preDirection"`
+	PostDirection                      string `json:"postDirection"`
 	USCensusCMSA                       string `json:"usCensusCMSA"`
-	USCensusFIPS                       string `json:"usCensusFIPS"`
+	USCensusBlockNumber                string `json:"usCensusBlockNumber"`
+	USCensusTractNumber                string `json:"usCensusTractNumber"`
+	USCongressionalDistrictNumber      string `json:"usCongressionalDistrictNumber"`
 	USCensusMA                         string `json:"usCensusMA"`
 	USCensusMSA                        string `json:"usCensusMSA"`
 	USCensusPMSA                       string `json:"usCensusPMSA"`
-	USCensusTractNumber                string `json:"usCensusTractNumber"`
-	USCongressionalDistrictNumber      string `json:"usCongressionalDistrictNumber"`
 	USHasDaylightSavings               bool   `json:"usHasDaylightSavings"`
 	USIntelligentMailBarcodeKey        string `json:"usIntelligentMailBarcodeKey"`
 	USMailingsCSKey                    string `json:"usMailingsCSKey"`
@@ -132,14 +143,12 @@ type VerifiedAddressDetails struct {
 	USMailingsDpvCrmaIndicator         string `json:"usMailingsDpvCrmaIndicator"`
 	USMailingsDpvFootnote1             string `json:"usMailingsDpvFootnote1"`
 	USMailingsDpvFootnote2             string `json:"usMailingsDpvFootnote2"`
-	USMailingsEWSFlag                  bool   `json:"usMailingsEWSFlag"`
+	USMailingsDpvFootnote3             string `json:"usMailingsDpvFootnote3"`
 	USMailingsElotAscDesc              string `json:"usMailingsElotAscDesc"`
-	USMailingsRecordTypeCode           string `json:"usMailingsRecordTypeCode"`
-	USPostnetBarcode                   string `json:"usPostnetBarcode"`
-	USStateLegislativeLower            string `json:"usStateLegislativeLower"`
-	USStateLegislativeUpper            string `json:"usStateLegislativeUpper"`
-	USTimezone                         string `json:"usTimeZone"`
-	Vacant                             bool   `json:"vacant"`
+	USMailingsElotSequenceNumber       string `json:"usMailingsElotSequenceNumber"`
+	USMailingsEWSFlag                  bool   `json:"usMailingsEWSFlag"`
+	USMailingsLACSFlag                 string `json:"usMailingsLACSFlag"`
+	USMailingsLACSReturnCode           string `json:"usMailingsLACSReturnCode"`
 }
 
 // VerifiedAddressResponse ...
